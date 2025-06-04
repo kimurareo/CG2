@@ -427,19 +427,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	HANDLE fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 	assert(fenceEvent != nullptr);
 
-	// Fenceの値を更新
-	fenceValue++;
-	// GPUがここまでたどり着いたときに、Fenceの値を指定した値に代入するようにSignalを送る
-	commandQueue->Signal(fence, fenceValue);
-	// GetCompletedValueの初期値はFance作成時に渡した初期値
-	if (fence->GetCompletedValue() < fenceValue) {
-
-		// 指定したSignal二たどりついていないので、たどりつくまで待つようにイベントを設定する
-		fence->SetEventOnCompletion(fenceValue, fenceEvent);
-		// イベントを待つ
-		WaitForSingleObject(fenceEvent, INFINITE);
-
-	}
+	
 
 	// dxCompilerを初期化
 	IDxcUtils* dxcUtils = nullptr;
@@ -675,6 +663,20 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// GPUとOSに画面の交換を行ように通知する
 			swapChain->Present(1, 0);
+
+			// Fenceの値を更新
+			fenceValue++;
+			// GPUがここまでたどり着いたときに、Fenceの値を指定した値に代入するようにSignalを送る
+			commandQueue->Signal(fence, fenceValue);
+			// GetCompletedValueの初期値はFance作成時に渡した初期値
+			if (fence->GetCompletedValue() < fenceValue) {
+
+				// 指定したSignal二たどりついていないので、たどりつくまで待つようにイベントを設定する
+				fence->SetEventOnCompletion(fenceValue, fenceEvent);
+				// イベントを待つ
+				WaitForSingleObject(fenceEvent, INFINITE);
+
+			}
 
 			// 次のフレームようのコマンドリストを準備
 			hr = commandList->Reset(commandAllocator, nullptr);
