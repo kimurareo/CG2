@@ -942,7 +942,6 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	vertexShaderBlob->Release();
 	materialResource->Release();
 
-
 	// リソースリークチェック
 	IDXGIDebug1* debug;
 	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug)))) {
