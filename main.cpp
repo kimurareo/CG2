@@ -56,6 +56,10 @@ void Log(const std::string& message) {
 	OutputDebugStringA(message.c_str());
 }
 
+//===================================================
+// 構造体
+//===================================================
+
 struct Matrix4x4 {
 	float m[4][4];
 };
@@ -64,6 +68,13 @@ struct Vector3 {
 	float x;
 	float y;
 	float z;
+};
+
+struct Vector4 {
+	float x;
+	float y;
+	float z;
+	float w;
 };
 
 struct Transform {
@@ -377,18 +388,6 @@ IDxcBlob* CompileShader(
 	return shaderBlob;
 
 }
-
-//===================================================
-// 構造体
-//===================================================
-
-struct Vector4{
-	float x;
-	float y;
-	float z;
-	float w;
-};
-
 
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -807,7 +806,8 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 単位行列を書き込んでおく
 	*wvpData = MakeIdentity4x4();
 
-	
+	// Transform変数を作る
+	Transform transform{ { 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f } };
 	
 
 
@@ -824,6 +824,10 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		}else{
 			// ゲームの処理
+			transform.rotate.y = 0.03f;
+			Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
+			*wvpData = worldMatrix;
+
 
 			// これから書き込むバックバッファのインデックスを取得
 			UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
@@ -868,9 +872,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// wvp用のCBufferの場所を設定
 			commandList->SetGraphicsRootConstantBufferView(1, wvpResource->GetGPUVirtualAddress());
 
-			// wvp用のCBufferの場所を設定
-			commandList->SetGraphicsRootConstantBufferView(1, wvpResource->GetGPUVirtualAddress());
-
+			
 			commandList->DrawInstanced(3, 1, 0, 0);
 			
 			
@@ -941,6 +943,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	pixelShaderBlob->Release();
 	vertexShaderBlob->Release();
 	materialResource->Release();
+	
 
 	// リソースリークチェック
 	IDXGIDebug1* debug;
