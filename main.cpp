@@ -430,7 +430,7 @@ IDxcBlob* CompileShader(
 }
 
 // Textureデータを読み込む
-DirectX:: ScratchImage LoadTexture(const std::string& filePath) {
+DirectX::ScratchImage LoadTexture(const std::string& filePath) {
 
 	// テクスチャファイルを読んでプログラムで扱えるようにする
 	DirectX::ScratchImage image{};
@@ -614,7 +614,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Log(ConvertString(std::format(L"WSTRING{}\n", L"abc")));
 
 	//===================================================================================================================
-	  
+
 	// DXGIファクトリーの生成
 	IDXGIFactory7* dxgiFactory = nullptr;
 
@@ -676,7 +676,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// エラー時に止まる
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
 		// 警告時に止まる
-	    infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
 
 		// 解放
 		// 抑制するメッセージのID
@@ -719,7 +719,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// コマンドリストを作成する
 	ID3D12GraphicsCommandList* commandList = nullptr;
-	hr = device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,commandAllocator,nullptr ,IID_PPV_ARGS(&commandList));
+	hr = device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator, nullptr, IID_PPV_ARGS(&commandList));
 
 	// コマンドリストの生成が上手くいかなかったので起動できない
 	assert(SUCCEEDED(hr));
@@ -777,7 +777,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
 	// 1つ目
 	rtvHandles[0] = rtvStartHandle;
-	device->CreateRenderTargetView(swapChainResources[0], &rtvDesc,rtvHandles[0]);
+	device->CreateRenderTargetView(swapChainResources[0], &rtvDesc, rtvHandles[0]);
 	// 2つ目
 	rtvHandles[1].ptr = rtvHandles[0].ptr + device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	device->CreateRenderTargetView(swapChainResources[1], &rtvDesc, rtvHandles[1]);
@@ -791,17 +791,17 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	uint64_t fenceValue = 0;
 	hr = device->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 	assert(SUCCEEDED(hr));
-	
+
 	// FenceのSignalを持つためのイベントを作成する
 	HANDLE fenceEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 	assert(fenceEvent != nullptr);
 
-	
+
 
 	// dxCompilerを初期化
 	IDxcUtils* dxcUtils = nullptr;
 	IDxcCompiler3* dxcCompiler = nullptr;
-	hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils));	
+	hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils));
 	assert(SUCCEEDED(hr));
 	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler));
 	assert(SUCCEEDED(hr));
@@ -810,8 +810,8 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	IDxcIncludeHandler* includeHandler = nullptr;
 	hr = dxcUtils->CreateDefaultIncludeHandler(&includeHandler);
 	assert(SUCCEEDED(hr));
-	
-	 // RootSifnatureを作成
+
+	// RootSifnatureを作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
@@ -840,7 +840,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
-	
+
 	//ID3D12Resource* vertexResource = CreateBufferResource(device, sizeof(VertexData) * 3);
 
 	// マテリアル用のリソースを作る。
@@ -864,9 +864,9 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	descriptionRootSignature.pStaticSamplers = staticSamplers;
 	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
-	
 
-	
+
+
 	// シリアライズしてバイナリにする
 	ID3DBlob* signatureBlob = nullptr;
 	ID3DBlob* errorBlob = nullptr;
@@ -880,7 +880,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ID3D12RootSignature* rootSignature = nullptr;
 	hr = device->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
 	assert(SUCCEEDED(hr));
-	
+
 	// InputLayout
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
@@ -996,7 +996,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 右下
 	vertexData[2].position = { 0.5f,-0.5f,0.0f,1.0f };
 	vertexData[2].texcoord = { 1.0f,1.0f };
-	
+
 	// 下2
 	vertexData[3].position = { -0.5f,-0.5f,0.5f,1.0f };
 	vertexData[3].texcoord = { 0.0f,1.0f };
@@ -1038,17 +1038,16 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// Transform変数を作る
 	Transform transform{ { 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f } };
-	
-	Transform cameraTransform{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,-5.0f} };
 
-	//Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kClientWidth) / float(kClientHeight), 0.1f, 100.0f);
+	Transform cameraTransform{ {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,-5.0f} };
+	//Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
+				//*wvpData = worldMatrix;
 
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 	Matrix4x4 cameraMatrix = MakeAffineMatrix(cameraTransform.scale, cameraTransform.rotate, cameraTransform.translate);
 	Matrix4x4 viewMatrix = Inverse(cameraMatrix);
 	Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kClientWidth) / float(kClientHeight), 0.1f, 100.0f);
 	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
-
 	*wvpData = worldViewProjectionMatrix;
 
 	// ImGuiの初期化
@@ -1105,14 +1104,14 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 頂点バッファビューを作成
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferViewSprite{};
 	vertexBufferViewSprite.BufferLocation = vertexResourceSprite->GetGPUVirtualAddress();
-	vertexBufferViewSprite.SizeInBytes = sizeof(VertexData) * 6;  
-	vertexBufferViewSprite.StrideInBytes = sizeof(VertexData);    
+	vertexBufferViewSprite.SizeInBytes = sizeof(VertexData) * 6;
+	vertexBufferViewSprite.StrideInBytes = sizeof(VertexData);
 
 
 	// 頂点データを設定する
 	VertexData* vertexDataSprite = nullptr;
 	vertexResourceSprite->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataSprite));
-    // 1枚目の三角形
+	// 1枚目の三角形
 	vertexDataSprite[0].position = { 0.0f,360.0f,0.0f,1.0f };
 	vertexDataSprite[0].texcoord = { 0.0f,1.0f };
 	vertexDataSprite[1].position = { 0.0f,0.0f,0.0f,1.0f };
@@ -1140,7 +1139,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	MSG msg{};
-	
+
 	// ウィンドウのxボタンが押されるまでループ
 	while (msg.message != WM_QUIT) {
 
@@ -1150,18 +1149,16 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 
-		}else{
+		} else {
 			// ゲームの処理
 
-			//Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
-			//*wvpData = worldMatrix;
+			// Sprite用のWorldViewProdectionMatrixを作る
+			Matrix4x4 worldMatrixSprite = MakeAffineMatrix(transformSprite.scale, transformSprite.rotate, transformSprite.translate);
+			Matrix4x4 viewMatrixSprite = MakeIdentity4x4();
+			Matrix4x4 projectionMatrixSprite = MakeOrthographixMatrix(0.0f, 0.0f, float(kClientWidth), float(kClientHeight), 0.0f, 100.0f);
+			Matrix4x4 worldViewProjectionMatrixSprite = Multiply(worldMatrixSprite, Multiply(viewMatrixSprite, projectionMatrixSprite));
+			*transformationMatrixDataSprite = worldViewProjectionMatrixSprite;
 
-			Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
-			Matrix4x4 cameraMatrix = MakeAffineMatrix(cameraTransform.scale, cameraTransform.rotate, cameraTransform.translate);
-			Matrix4x4 viewMatrix = Inverse(cameraMatrix);
-			Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kClientWidth) / float(kClientHeight), 0.1f, 100.0f);
-			Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
-			*wvpData = worldViewProjectionMatrix;
 
 			// IMG
 			ImGui_ImplDX12_NewFrame();
@@ -1172,7 +1169,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui::End();
 
 			transform.rotate.y += 0.03f;
-			//Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
+			Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 			*wvpData = worldMatrix;
 
 			// 開発用のUIの処理。実際に開発用のUiを出す場合はここをゲーム固有の処理に書き換える
@@ -1220,7 +1217,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//================================================================
 			// 三角形の描画
 			//================================================================
-			
+
 			// コマンドを積む
 			commandList->RSSetViewports(1, &viewport);
 			commandList->RSSetScissorRects(1, &scissorRect);
@@ -1237,9 +1234,9 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// SRVのDescriptorTableの先頭を設定
 			commandList->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
-			
+
 			commandList->DrawInstanced(6, 1, 0, 0);
-			
+
 			// -----------------------------------------
 
 			// Spriteの描画
@@ -1332,7 +1329,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	vertexResourceSprite->Release();
 	transformationMatrixResourceSprite->Release();
 
-	
+
 
 	// リソースリークチェック
 	IDXGIDebug1* debug;
