@@ -579,8 +579,9 @@ MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const st
 		s >> identifier;
 
 		// identifierに応じた処理
-		if (identifier == "map_kd") {
+		if (identifier == "map_Kd") {
 			std::string textureFilename;
+			s >> textureFilename;
 			// 連結してファイルパスにする
 			materialData.textureFilePath = directoryPath + "/" + textureFilename;
 
@@ -658,6 +659,8 @@ ModelData LoadObjFile(const std::string& directorPath, const std::string& filena
 				position.x *= -1.0f;
 
 				Vector2 texcoord = texcoords[elementIndices[1] - 1];
+				texcoord.y = 1.0f - texcoord.y;
+
 				Vector3 normal = normals[elementIndices[2] - 1];
 				normal.x *= -1.0f;
 
@@ -1166,6 +1169,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// モデル読み込み
 	ModelData modelData = LoadObjFile("resources", "plane.obj");
+	//ModelData modelData = LoadObjFile("resources", "pxio.obj");
 	// 頂点リソースを作る
 	ID3D12Resource* vertexResource = CreateBufferResource(device, sizeof(VertexData) * modelData.vertices.size());
 	// 頂点バッファビューを作成する
@@ -1349,6 +1353,9 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui::Begin("Settings");
 			ImGui::ColorEdit4("Material", &materialData->x, ImGuiColorEditFlags_AlphaPreview);
 			ImGui::DragFloat("rotate.y", &transform.rotate.y, 0.1f);
+			ImGui::DragFloat3("transform", &transform.translate.x, 0.1f);
+			ImGui::DragFloat2("Sprite tranform", &transformSprite.translate.x, 1.0f);
+
 			ImGui::End();
 
 			//transform.rotate.y += 0.03f;
