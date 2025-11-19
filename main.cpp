@@ -1092,6 +1092,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
 	// 裏面（時計回り）を表示しない
 	rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 	// 三角形の中を塗りつぶす
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
@@ -1366,7 +1367,9 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//================================================================
 	const uint32_t kNumInstance = 10; // インスタンス数
 	// Instancin用のTransformationMatrixリソースを作る
-	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource = CreateBufferResource(device, sizeof(TransformationMatrix) * kNumInstance);
+	// Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource = CreateBufferResource(device, sizeof(TransformationMatrix) * kNumInstance);
+	ID3D12Resource* instancingResource = CreateBufferResource(device, sizeof(TransformationMatrix) * kNumInstance);
+
 	// 書き込むためのアドレスを取得
 	TransformationMatrix* instancingData = nullptr;
 	instancingResource->Map(0, nullptr, reinterpret_cast<void**>(&instancingData));
@@ -1394,7 +1397,10 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	D3D12_GPU_DESCRIPTOR_HANDLE instancingSrvHandleGPU = GetGPUDescriptorHandle(srvDescriptorHeap, desriptorSizeSRV, 3);
 
-	device->CreateShaderResourceView(instancingResource.Get(),&instancingSrvDesc,instancingSrvHandleCPU);
+	//device->CreateShaderResourceView(instancingResource.Get(),&instancingSrvDesc,instancingSrvHandleCPU);
+
+	device->CreateShaderResourceView(instancingResource, &instancingSrvDesc, instancingSrvHandleCPU);
+
 
 	Transform transforms[kNumInstance];
 
@@ -1541,17 +1547,17 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// -----------------------------------------
 
-			// Spriteの描画
-			commandList->IASetVertexBuffers(0, 1, &vertexBufferViewSprite);
-			// TransformationMatrixCBufferの場所を設定
-			commandList->SetGraphicsRootConstantBufferView(1, transformationMatrixResourceSprite->GetGPUVirtualAddress());
+			//// Spriteの描画
+			//commandList->IASetVertexBuffers(0, 1, &vertexBufferViewSprite);
+			//// TransformationMatrixCBufferの場所を設定
+			//commandList->SetGraphicsRootConstantBufferView(1, transformationMatrixResourceSprite->GetGPUVirtualAddress());
 
-			// インデックスを指定
-			commandList->IASetIndexBuffer(&indexBufferViewSprite);
+			//// インデックスを指定
+			//commandList->IASetIndexBuffer(&indexBufferViewSprite);
 
-			// 描画!
-			//commandList->DrawInstanced(6, 1, 0, 0);
-			commandList->DrawIndexedInstanced(UINT(modelData.vertices.size()), 10, 0, 0, 0);
+			//// 描画!
+			////commandList->DrawInstanced(6, 1, 0, 0);
+			//commandList->DrawIndexedInstanced(UINT(modelData.vertices.size()), 10, 0, 0, 0);
 
 
 			// 実際のcommandListのImguiの描画コマンドを積む
@@ -1636,6 +1642,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	vertexResourceSprite->Release();
 	transformationMatrixResourceSprite->Release();
 	indexResourceSprite->Release();
+	instancingResource->Release();
 
 
 
