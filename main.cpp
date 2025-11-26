@@ -1455,7 +1455,6 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				instancingData[index].World = worldMatrix;
 			}
 
-
 			// IMG
 			ImGui_ImplDX12_NewFrame();
 			ImGui_ImplWin32_NewFrame();
