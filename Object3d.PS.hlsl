@@ -8,7 +8,7 @@ struct PixelShaderOutput
 struct Material
 {
     float32_t4 color;
-    float32_t enableLighting;
+    int32_t enableLighting;
 };
 
 struct DirectionalLight

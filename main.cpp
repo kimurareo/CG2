@@ -113,7 +113,7 @@ struct TransformationMatrix {
 
 struct DirectionalLight {
 	Vector4 color;
-	Vector4 direction;
+	Vector3 direction;
 	float intensity;
 };
 
@@ -313,6 +313,25 @@ Matrix4x4 Inverse(const Matrix4x4& m) {
 		m.m[0][1] * m.m[1][0] * m.m[2][2] - m.m[0][0] * m.m[1][2] * m.m[2][1]) * recpDeterminant;
 
 	return result;
+}
+
+// 内積
+float Dot(const Vector3& v1, const Vector3& v2) {
+	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+}
+
+// 長さ
+float Length(const Vector3& v) {
+	return std::sqrt(Dot(v, v));
+}
+
+// 正規化
+Vector3 Normalize(const Vector3& v) {
+	float length = Length(v);
+	if (length == 0.0f) {
+		return v;
+	}
+	return { v.x / length, v.y / length, v.z / length };
 }
 
 
@@ -1390,7 +1409,12 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui::Begin("Settings");
 			ImGui::ColorEdit4("Material", &materialData->color.x, ImGuiColorEditFlags_AlphaPreview);
 			ImGui::Checkbox("useMonsterBall", &useMonsterBall);
+			ImGui::DragFloat3("light",&directionalLightData->direction.x,0.01f-1.0f,1.0f);
+
 			ImGui::End();
+
+			// 方向は正規化
+			directionalLightData->direction = Normalize(directionalLightData->direction);
 
 			transform.rotate.y += 0.03f;
 
